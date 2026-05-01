@@ -23,7 +23,7 @@ function setFormMessage(message, type = '') {
 }
 
 async function sendFeedback(name, rating, comment) {
-    const response = await fetch('http://localhost:3000/feedback-submit', {
+    const response = await fetch('https://phase-6.vercel.app/feedback-submit', {
         method: 'POST',
         headers: {
             'content-type': 'application/json'
