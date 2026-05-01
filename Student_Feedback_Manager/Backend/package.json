@@ -1,0 +1,27 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "Student feedback manager",
+  "keywords": [
+    "student",
+    "management",
+    "feedback",
+    "student",
+    "portal",
+    "LMS"
+  ],
+  "license": "ISC",
+  "author": "Sachin",
+  "type": "commonjs",
+  "main": "server.js",
+  "scripts": {
+    "start": "node ./src/server.js ",
+    "dev": "node --watch ./src/server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "express": "^5.2.1",
+    "mongodb": "^7.1.0",
+    "mongoose": "^9.1.6"
+  }
+}
