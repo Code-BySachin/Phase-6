@@ -1,5 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const path = require('path');
 require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -41,7 +42,7 @@ const feedbackSchema = new Schema(schema)
 const FeedbackModel = mongoose.model('Feedback', feedbackSchema);
 
 
-app.use(express.static('public')) // check at deployment (without path.join(__dirname, 'public'))
+app.use(express.static(path.join(__dirname, '../public')));
 app.use(express.json());
 
 
@@ -76,7 +77,10 @@ app.post('/feedback-submit',(req,res)=>{
     })
 })
 
-app.listen(PORT,()=>{
-    console.log(`Server is running on port: http://localhost:${PORT}`);
+if (require.main === module) {
+    app.listen(PORT, () => {
+        console.log(`Server is running on port: http://localhost:${PORT}`);
+    });
+}
 
-})
+module.exports = app;
