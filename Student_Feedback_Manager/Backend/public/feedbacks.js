@@ -3,7 +3,7 @@ const container = document.getElementById('container');
 addEventListener('load',async(e)=>{
     console.log("fetching...")
     try{
-        const response = await fetch('https://phase-6.vercel.app/feedbacks');
+        const response = await fetch('/feedbacks');
         const data = await response.json();
         container.innerHTML = data.map((feedback)=>{
             const comment = feedback.comment && feedback.comment.trim()
