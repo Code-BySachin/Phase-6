@@ -1,10 +1,16 @@
 const express = require('express');
 const mongoose = require('mongoose');
+require('dotenv').config();
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
+const MONGODB_URI = process.env.MONGODB_URI;
 
 
-const mongoConnection = mongoose.connect('mongodb://localhost:27017/student-feedback-manager')
+if (!MONGODB_URI) {
+    throw new Error('MONGODB_URI is not defined');
+}
+
+const mongoConnection = mongoose.connect(MONGODB_URI)
 .then(()=> console.log('MongoDB connected successfully'))
 .catch((err)=> console.log(`Connection error: ${err} `))
 

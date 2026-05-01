@@ -1,65 +1,79 @@
 const elements = {
+    form: document.querySelector('form'),
     name: document.getElementById('name'),
-    rating:document.querySelectorAll('.rating'),
+    rating: document.querySelectorAll('.rating'),
     comment: document.getElementById('comment'),
     submit: document.getElementById('submit'),
-    "feedbacks-btn": document.getElementById('feedbacks-btn')
+    feedbacksBtn: document.getElementById('feedbacks-btn'),
+    formMessage: document.getElementById('form-message')
+};
+
+elements.feedbacksBtn.addEventListener('click', () => {
+    window.location.href = '/feedbacks.html';
+});
+
+function getSelectedRating() {
+    const selected = Array.from(elements.rating).find((input) => input.checked);
+    return selected ? selected.value : '';
 }
 
-let name  = '';
-let rating='';
-let comment = '';
+function setFormMessage(message, type = '') {
+    elements.formMessage.textContent = message;
+    elements.formMessage.className = `form-message ${type}`;
+}
 
-elements["feedbacks-btn"].addEventListener('click',(e)=>{
-    window.location.href = "/feedbacks.html";
-})
-
-elements["name"].addEventListener('input',(e)=>{
-    name =  e.target.value;
-})
-console.log(elements["rating"])
-
-elements["rating"].forEach((element)=>{
-    element.addEventListener('click',(e)=>{
-        rating=e.target.value;
-    })
-})
-
-elements["comment"].addEventListener('click',(e)=>{
-        comment=e.target.value;
-    })
-
-async function sendFeedback(name,rating,comment){
-    try{
-
-        const response = await fetch("http://localhost:3000/feedback-submit",{
-            method:"POST",
-            headers:{
-                "content-type":"application/json",
-            },
-            body: JSON.stringify({
-                name,
-                rating,
-                comment
-            })
-            
+async function sendFeedback(name, rating, comment) {
+    const response = await fetch('http://localhost:3000/feedback-submit', {
+        method: 'POST',
+        headers: {
+            'content-type': 'application/json'
+        },
+        body: JSON.stringify({
+            name,
+            rating,
+            comment
         })
+    });
 
-        console.log(response)
-    }catch(err){
-         console.log(err);
+    if (!response.ok) {
+        throw new Error('Failed to submit feedback');
     }
 
+    return response.json();
 }
-console.log(elements['submit'])
-elements['submit'].addEventListener('click',async (e)=>{
-    e.preventDefault();
-    console.log("submitting...")
-    console.log(e.target)
-    e.target.value = 'Submitting...'
-    await sendFeedback(name,rating,comment);
-    e.target.value = 'Submit'
 
-})
+elements.form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const name = elements.name.value.trim();
+    const rating = getSelectedRating();
+    const comment = elements.comment.value.trim();
+
+    if (!name || !rating) {
+        setFormMessage('Please add your name and select a rating.', 'error');
+        return;
+    }
+
+    setFormMessage('');
+    elements.submit.value = 'Submitting...';
+    elements.submit.disabled = true;
+
+    try {
+        const result = await sendFeedback(name, rating, comment);
+
+        if (result.success) {
+            elements.form.reset();
+            setFormMessage('Feedback submitted successfully.', 'success');
+        } else {
+            setFormMessage(result.message || 'Could not submit feedback. Please try again.', 'error');
+        }
+    } catch (err) {
+        console.log(err);
+        setFormMessage('Something went wrong. Please try again.', 'error');
+    } finally {
+        elements.submit.value = 'Submit';
+        elements.submit.disabled = false;
+    }
+});
 
 

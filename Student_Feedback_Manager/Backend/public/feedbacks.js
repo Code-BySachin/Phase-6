@@ -5,16 +5,20 @@ addEventListener('load',async(e)=>{
     try{
         const response = await fetch('http://localhost:3000/feedbacks');
         const data = await response.json();
-        data.map((data)=>{
-            container.innerHTML += `
+        container.innerHTML = data.map((feedback)=>{
+            const comment = feedback.comment && feedback.comment.trim()
+                ? feedback.comment
+                : 'No comment provided';
+
+            return `
             <div class="card">
-                <h3>${data.name}</h3>
-                <div>${data.rating}</div>
-                <p>${data.comment}</p>
-                <span>${data.createdAt}</span>
+                <h3>${feedback.name}</h3>
+                <div>${feedback.rating}</div>
+                <p>${comment}</p>
+                <span>${feedback.createdAt}</span>
             </div>
-            `
-        })
+            `;
+        }).join('');
 
 
     }catch(err){
